@@ -67,3 +67,41 @@
         regexp: '^export PATH={{ ansible_env.HOME }}/anaconda3/bin:\$PATH'
         line: 'export PATH={{ ansible_env.HOME }}/anaconda3/bin:$PATH'
 
+
+    - name: add ppa repository for nvidia driver install
+      become: true
+      apt_repository:
+        repo: 'ppa:graphics-drivers/ppa'
+
+    - name: install nvidia drivers
+      apt:
+        name: nvidia-375
+      become: true
+
+    - name: Verify You Have a CUDA-Capable GPU
+      shell: lspci | grep -i nvidia
+      register: nvidia_card_check
+
+    - name: install nvidia drivers
+      apt:
+        name: nvidia-375
+      become: true
+      when: nvidia_card_check|failed
+
+    - name: set opt directory owner and group to mind
+      become: true
+      file:
+        path: /opt
+        state: directory
+        owner: mind
+        group: mind
+        #recurse: yes
+
+    - name: Mount sdb1 to /opt
+      become: true 
+      mount:
+        path: /opt
+        src: /dev/sdb1
+        fstype: ext4
+        state: mounted
+
