@@ -1,0 +1,41 @@
+---
+- hosts: tf
+
+  tasks:
+    # mount /dev/sdb1 to /opt
+    - name: set opt directory owner and group to mind
+      become: true
+      file:
+        path: /opt
+        state: directory
+        owner: mind
+        group: mind
+        #recurse: yes
+
+    - name: Mount sdb1 to /opt
+      become: true 
+      mount:
+        path: /opt
+        src: /dev/sdb1
+        fstype: ext4
+        state: mounted
+
+    # nfs export home
+    - name: install nfs server and exports home dir
+      become: true
+      apt:
+        name: nfs-kernel-server
+
+    - name: change /etc/exports file
+      become: true 
+      lineinfile:
+        state: present
+        dest: /etc/exports
+        regexp: '/home/mind            192.168.10.1/24\(ro,sync,insecure,no_root_squash,no_subtree_check\)'
+        line: '/home/mind            192.168.10.1/24(ro,sync,insecure,no_root_squash,no_subtree_check)'
+      register: exports_file_change
+
+    - name: restart nfs server
+      become: true
+      service: name=nfs-kernel-server state=restarted
+      when: exports_file_change|failed

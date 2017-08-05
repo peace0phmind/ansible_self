@@ -1,0 +1,36 @@
+---
+- hosts: tf
+
+  tasks:
+    - name: add ppa repository for nvidia driver install
+      become: true
+      apt_repository:
+        repo: 'ppa:graphics-drivers/ppa'
+
+    - name: Verify You Have a CUDA-Capable GPU
+      shell: lspci | grep -i nvidia
+      register: nvidia_card_check
+
+    - name: install nvidia drivers
+      apt:
+        name: nvidia-375
+      become: true
+      when: nvidia_card_check.rc == 0
+
+    # check nouveau drivers and Disabling it
+    - name: check Nouveau drivers are loaded
+      shell: lsmod | grep nouveau
+      register: nouveau_check
+
+    - name: copy nouveau to config file dir
+      become: true
+      copy:
+        src: blacklist-nouveau.conf
+        dest: /etc/modprobe.d/
+        mode: 0644
+      when: nouveau_check.rc == 0
+
+    - name: Regenerate the kernel initramfs
+      become: true
+      command: update-initramfs -u
+      when: nouveau_check.rc == 0
