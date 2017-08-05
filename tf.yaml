@@ -2,11 +2,11 @@
 - hosts: tf
 
   tasks:
-    # add aliyun mirror
-    - apt_repository:
+    - name: add aliyun repository mirror
+      become: true
+      apt_repository:
         repo: deb http://mirrors.aliyun.com/ubuntu/ xenial main
         state: present
-      become: true
 
     - apt_repository:
         repo: deb-src http://mirrors.aliyun.com/ubuntu/ xenial main
@@ -23,16 +23,13 @@
         name: zsh
       become: true
 
-    - debug:
-        msg: "username: {{ansible_ssh_user}}"
-    
     - user:
         name: "{{ ansible_ssh_user }}"
         shell: /bin/zsh
       become: true
     
-    # check if oh_my_zsh installed, otherwise install it.
-    - stat: path=~/.oh-my-zsh
+    - name: check if oh_my_zsh installed, otherwise install it.
+      stat: path=~/.oh-my-zsh
       register: oh_my_zsh
     
     - name: Download zsh installer
@@ -55,3 +52,18 @@
         path: ~/.zshrc
         regexp: '^ZSH_THEME=".*"$'
         line: 'ZSH_THEME="tf"'
+
+    # install anaconda3 on remote host
+    - stat: path=~/anaconda3
+      register: anaconda3
+
+    - script: res/Anaconda3-4.4.0-Linux-x86_64.sh -b
+      when: anaconda3.stat.exists == false
+
+    - name: set anaconda path in .zshrc file
+      lineinfile: 
+        state: present
+        dest: ~/.zshrc
+        regexp: '^export PATH={{ ansible_env.HOME }}/anaconda3/bin:\$PATH'
+        line: 'export PATH={{ ansible_env.HOME }}/anaconda3/bin:$PATH'
+
