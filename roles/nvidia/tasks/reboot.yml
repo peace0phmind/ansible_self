@@ -1,5 +1,6 @@
 ---
 - name: reboot the machine
+  become: true
   shell: sleep 5 && /sbin/reboot
   async: 1
   poll: 0

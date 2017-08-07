@@ -4,6 +4,7 @@
   apt_repository:
     repo: 'ppa:graphics-drivers/ppa'
 
+# check and install nvidia driver from ppa
 - name: Verify You Have a CUDA-Capable GPU
   shell: lspci | grep -i nvidia
   register: nvidia_card_check
@@ -33,16 +34,51 @@
   command: update-initramfs -u
   when: nouveau_check.rc == 0
 
-#- include: reboot.yml
-#   when: nouveau_check.rc == 0
+# check runlevel and set to multi-user.target
+- name: get default runlevel
+  become: true
+  command: systemctl get-default
+  register: runlevel
 
 - name: set default runlevel to multi-user.target
   become: true
   command: systemctl set-default multi-user.target
+  when: runlevel.stdout != 'multi-user.target'
 
-- name: enable runlevel to multi-user.target
+- include: reboot.yml
+  when: runlevel.stdout != 'multi-user.target'
+
+# check and install nvidia cuda toolkit and patch
+- stat: path=/usr/local/cuda/version.txt
+  register: cuda_toolkit
+
+- name: get cuda toolkit version content
+  command: cat /usr/local/cuda/version.txt
+  register: cuda_toolkit_version
+  when: cuda_toolkit.stat.exists != true
+
+- name: run cuda tool kit install
   become: true
-  command: systemctl enable multi-user.target
+  script: files/cuda_8.0.61_375.26_linux.run --silent --toolkit --samples
+  when: cuda_toolkit.stat.exists != true
 
-- name: Wait for the server to finish rebooting
-  local_action: wait_for host="{{ inventory_hostname }}" search_regex=OpenSSH port=22 timeout=300
+- name: run cuda tool kit patch install
+  become: true
+  script: files/cuda_8.0.61.2_linux.run --silent --accept-eula
+  when: ( cuda_toolkit_version | skipped != true) and
+        ( cuda_toolkit_version.stdout.find('CUDA Patch Version 8.0.61.2') == -1 )
+
+# config path environment
+- name: add cuda bin to path
+  lineinfile:
+    state: present
+    dest: ~/.zshrc
+    regexp: 'export PATH=/usr/local/cuda/bin:\$PATH'
+    line: 'export PATH=/usr/local/cuda/bin:$PATH'
+
+- name: add lib path to LD_LIBRARY_PATH
+  lineinfile:
+    state: present
+    dest: ~/.zshrc
+    regexp: 'export LD_LIBRARY_PATH=/usr/local/cuda/lib64:\$LD_LIBRARY_PATH'
+    line: 'export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH'
