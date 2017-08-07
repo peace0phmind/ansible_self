@@ -1,4 +1,7 @@
 ---
+# proxy http://172.23.3.112:3128
+#
+
 - name: add aliyun repository mirror
   become: true
   apt_repository:
