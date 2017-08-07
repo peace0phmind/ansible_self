@@ -1,0 +1,24 @@
+---
+- name: install squid
+  yum:
+    name: squid
+    state: present
+
+- name: add maximum object size 200 MB to squid.conf file
+  lineinfile:
+    state: present
+    dest: /etc/squid/squid.conf
+    regexp: 'maximum_object_size 200 MB'
+    line: 'maximum_object_size 200 MB'
+
+- name: add cache_dir to squid.conf file
+  lineinfile:
+    state: present
+    dest: /etc/squid/squid.conf
+    regexp: 'cache_dir aufs /var/spool/squid 3000 16 256'
+    line: 'cache_dir aufs /var/spool/squid 3000 16 256'
+
+- service:
+    name: squid
+    state: restarted
+    enabled: yes
