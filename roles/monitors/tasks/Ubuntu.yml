@@ -1,6 +1,5 @@
 ---
-- name: install text ui traffic monitor: iftop
+- name: install text ui traffic monitor iftop
   become: true
   apt:
     name: iftop
-

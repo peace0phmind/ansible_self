@@ -3,6 +3,7 @@
 
   roles:
     - upgrade
+    - monitors
     - fstab_nfs
     - zsh
     - anaconda

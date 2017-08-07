@@ -52,15 +52,18 @@
 - stat: path=/usr/local/cuda/version.txt
   register: cuda_toolkit
 
-- name: get cuda toolkit version content
-  command: cat /usr/local/cuda/version.txt
-  register: cuda_toolkit_version
-  when: cuda_toolkit.stat.exists != true
-
 - name: run cuda tool kit install
   become: true
   script: files/cuda_8.0.61_375.26_linux.run --silent --toolkit --samples
   when: cuda_toolkit.stat.exists != true
+
+- stat: path=/usr/local/cuda/version.txt
+  register: cuda_toolkit
+
+- name: get cuda toolkit version content
+  command: cat /usr/local/cuda/version.txt
+  register: cuda_toolkit_version
+  when: cuda_toolkit.stat.exists is defined and cuda_toolkit.stat.exists
 
 - name: run cuda tool kit patch install
   become: true
