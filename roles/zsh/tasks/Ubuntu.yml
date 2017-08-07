@@ -22,6 +22,7 @@
 - name: Execute the zsh-installer.sh
   command: sh -c /tmp/zsh-installer.sh
   when: oh_my_zsh.stat.exists == False
+  ignore_errors: true
 
 - name: copy tf zsh-theme
   copy:
