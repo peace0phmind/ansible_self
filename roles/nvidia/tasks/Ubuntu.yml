@@ -85,3 +85,12 @@
     dest: ~/.zshrc
     regexp: 'export LD_LIBRARY_PATH=/usr/local/cuda/lib64:\$LD_LIBRARY_PATH'
     line: 'export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH'
+
+- name: Extract cudnn driver into /usr/local
+  become: true
+  unarchive:
+    src: files/cudnn-8.0-linux-x64-v{{ cudnn_version }}.tgz
+    dest: /usr/local
+    owner: root
+    group: root
+#    mode: 0644

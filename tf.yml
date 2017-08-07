@@ -2,9 +2,9 @@
 - hosts: tf
 
   roles:
-    - upgrade
-    - monitors
-    - fstab_nfs
-    - zsh
-    - anaconda
+#    - upgrade
+#    - monitors
+#    - fstab_nfs
+#    - zsh
+#    - anaconda
     - nvidia
