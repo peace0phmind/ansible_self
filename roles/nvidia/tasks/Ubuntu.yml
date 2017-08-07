@@ -1,0 +1,48 @@
+---
+- name: add ppa repository for nvidia driver install
+  become: true
+  apt_repository:
+    repo: 'ppa:graphics-drivers/ppa'
+
+- name: Verify You Have a CUDA-Capable GPU
+  shell: lspci | grep -i nvidia
+  register: nvidia_card_check
+
+- name: install nvidia drivers
+  apt:
+    name: nvidia-375
+  become: true
+  when: nvidia_card_check.rc == 0
+
+# check nouveau drivers and Disabling it
+- name: check Nouveau drivers are loaded
+  shell: lsmod | grep nouveau
+  register: nouveau_check
+  ignore_errors: true
+
+- name: copy nouveau to config file dir
+  become: true
+  copy:
+    src: files/blacklist-nouveau.conf
+    dest: /etc/modprobe.d/
+    mode: 0644
+  when: nouveau_check.rc == 0
+
+- name: Regenerate the kernel initramfs
+  become: true
+  command: update-initramfs -u
+  when: nouveau_check.rc == 0
+
+#- include: reboot.yml
+#   when: nouveau_check.rc == 0
+
+- name: set default runlevel to multi-user.target
+  become: true
+  command: systemctl set-default multi-user.target
+
+- name: enable runlevel to multi-user.target
+  become: true
+  command: systemctl enable multi-user.target
+
+- name: Wait for the server to finish rebooting
+  local_action: wait_for host="{{ inventory_hostname }}" search_regex=OpenSSH port=22 timeout=300

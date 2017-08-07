@@ -1,0 +1,9 @@
+---
+- hosts: tf
+
+  roles:
+    - upgrade
+#    - fstab_nfs
+#    - zsh
+#    - anaconda
+#    - nvidia

@@ -1,0 +1,35 @@
+- name: install zsh
+  apt:
+    name: zsh
+  become: true
+
+- user:
+    name: "{{ ansible_ssh_user }}"
+    shell: /bin/zsh
+  become: true
+
+- name: check if oh_my_zsh installed, otherwise install it.
+  stat: path=~/.oh-my-zsh
+  register: oh_my_zsh
+
+- name: Download zsh installer
+  get_url:
+    url: https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
+    dest: /tmp/zsh-installer.sh
+    mode: 0755
+  when: oh_my_zsh.stat.exists == False
+
+- name: Execute the zsh-installer.sh
+  command: sh -c /tmp/zsh-installer.sh
+  when: oh_my_zsh.stat.exists == False
+
+- name: copy tf zsh-theme
+  copy:
+    src: files/tf.zsh-theme
+    dest: ~/.oh-my-zsh/themes
+    mode: 0644
+
+- lineinfile:
+    path: ~/.zshrc
+    regexp: '^ZSH_THEME=".*"$'
+    line: 'ZSH_THEME="tf"'

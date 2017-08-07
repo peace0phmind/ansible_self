@@ -1,0 +1,21 @@
+---
+- homebrew:
+    name: squid
+    state: present
+
+- name: add maximum object size 200 MB to squid.conf file
+  lineinfile:
+    state: present
+    dest: /usr/local/etc/squid.conf
+    regexp: 'maximum_object_size 200 MB'
+    line: 'maximum_object_size 200 MB'
+
+- name: add cache_dir to squid.conf file
+  lineinfile:
+    state: present
+    dest: /usr/local/etc/squid.conf
+    regexp: 'cache_dir aufs /usr/local/var/cache/squid 3000 16 256'
+    line: 'cache_dir aufs /usr/local/var/cache/squid 3000 16 256'
+
+- name: restart squid
+  command: brew services restart squid
