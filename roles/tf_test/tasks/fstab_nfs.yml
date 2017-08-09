@@ -1,18 +1,20 @@
 ---
 # mount /dev/sdb1 to /opt
+
 - name: set opt directory owner and group to mind
   become: true
   file:
-    path: /opt
+    path: /res
     state: directory
-    owner: mind
-    group: mind
+    owner: root
+    group: root
+    mode: 0755
     #recurse: yes
 
 - name: Mount sdb1 to /opt
   become: true
   mount:
-    path: /opt
+    path: /res
     src: /dev/sdb1
     fstype: ext4
     state: mounted

@@ -1,0 +1,12 @@
+---
+#- include: fstab_nfs.yml
+#- include: git.yml
+#- include: git_clone.yml
+
+- name: add ip to /etc/hosts
+  become: true
+  lineinfile:
+    state: present
+    dest: /etc/hosts
+    regexp: '{{ ansible_default_ipv4.address }}   tf'
+    line: '{{ ansible_default_ipv4.address }}   tf'

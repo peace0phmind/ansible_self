@@ -54,7 +54,7 @@
 
 - name: run cuda tool kit install
   become: true
-  script: files/cuda_8.0.61_375.26_linux.run --silent --toolkit --samples
+  script: large_files/cuda_8.0.61_375.26_linux.run --silent --toolkit --samples
   when: cuda_toolkit.stat.exists != true
 
 - stat: path=/usr/local/cuda/version.txt
@@ -67,7 +67,7 @@
 
 - name: run cuda tool kit patch install
   become: true
-  script: files/cuda_8.0.61.2_linux.run --silent --accept-eula
+  script: large_files/cuda_8.0.61.2_linux.run --silent --accept-eula
   when: ( cuda_toolkit_version | skipped != true) and
         ( cuda_toolkit_version.stdout.find('CUDA Patch Version 8.0.61.2') == -1 )
 
@@ -89,7 +89,7 @@
 - name: Extract cudnn driver into /usr/local
   become: true
   unarchive:
-    src: files/cudnn-8.0-linux-x64-v{{ cudnn_version }}.tgz
+    src: large_files/cudnn-8.0-linux-x64-v{{ cudnn_version }}.tgz
     dest: /usr/local
     owner: root
     group: root

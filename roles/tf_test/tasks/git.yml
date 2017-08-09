@@ -1,0 +1,47 @@
+---
+# create user git
+- name: add git group
+  become: true
+  group:
+    name: git
+    state: present
+
+- name: create git user
+  become: true
+  user:
+    name: git
+    group: git
+    home: /res/git
+    shell: /bin/zsh
+    skeleton: true
+    state: present
+
+# install oh_my_zsh
+- name: install oh_my_zsh
+  become: true
+  become_user: git
+  include_role:
+    name: zsh
+    tasks_from: oh_my_zsh.yml
+
+# install git lfs
+- name: Extract lfs-test-server to git user dir
+  become: true
+  become_user: git
+  unarchive:
+    src: large_files/Linux-lfs-test-server.AMD64.gz
+    dest: ~/
+
+
+- name: Generate SSH keys
+  shell: ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ""
+  args:
+    creates: ~/.ssh/id_rsa
+
+
+- name: clone projects to git user
+    block:
+      - debug:
+          msg: "{{ item }}"
+    with_items:
+      - https://github.com/tensorflow/tensorflow.git

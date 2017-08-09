@@ -3,7 +3,7 @@
 - stat: path=~/anaconda3
   register: anaconda3
 
-- script: files/Anaconda3-4.4.0-Linux-x86_64.sh -b
+- script: large_files/Anaconda3-4.4.0-Linux-x86_64.sh -b
   when: anaconda3.stat.exists == false
 
 - name: set anaconda path in .zshrc file

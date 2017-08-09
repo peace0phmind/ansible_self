@@ -1,0 +1,9 @@
+---
+- name: clone projects to git user
+  become: true
+  become_user: git
+  include: git_clone_block.yml projectUrl={{ item }}
+  with_items:
+    - git@github.com:peace0phmind/ansible_self.git
+    - git@github.com:tensorflow/tensorflow.git
+    - git@github.com:tensorflow/models.git
