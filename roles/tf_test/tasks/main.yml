@@ -1,7 +1,6 @@
 ---
 #- include: fstab_nfs.yml
 #- include: git.yml
-#- include: git_clone.yml
 
 - name: add ip to /etc/hosts
   become: true

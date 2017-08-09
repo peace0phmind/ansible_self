@@ -1,9 +1,23 @@
 ---
-- name: clone projects to git user
-  become: true
-  become_user: git
-  include: git_clone_block.yml projectUrl={{ item }}
-  with_items:
-    - git@github.com:peace0phmind/ansible_self.git
-    - git@github.com:tensorflow/tensorflow.git
-    - git@github.com:tensorflow/models.git
+- name: reget user variables to fix become_user bugs
+  setup:
+
+- set_fact: projectDir={{ ansible_user_dir }}/{{ projectUrl|regex_replace('git@', '')|regex_replace(':', '/') }}
+
+- stat:
+    path: "{{ projectDir }}"
+  register: project_dir_stat
+
+- name: git clone {{ projectUrl }}
+  command: "git clone --mirror {{ projectUrl }} {{ projectDir }}"
+#  async: 10800
+#  poll: 0
+  when: project_dir_stat.stat.exists == false
+
+- name: git fetch {{ projectUrl }}
+  command: git fetch
+  args:
+    chdir: "{{ projectDir }}"
+#  async: 45
+#  poll: 0
+  when: project_dir_stat.stat.exists == true
