@@ -1,0 +1,23 @@
+---
+#reget user variables to fix become_user bugs
+- setup:
+- set_fact: projectDir={{ ansible_user_dir }}/{{ projectUrl|regex_replace('git@', '')|regex_replace('git://', '')|regex_replace('https://', '')|regex_replace('http://', '')|regex_replace(':', '/') }}
+
+- stat:
+    path: "{{ projectDir }}"
+  register: project_dir_stat
+
+- name: git clone {{ projectUrl }}
+  command: "git clone --mirror {{ projectUrl }} {{ projectDir }}"
+  when: project_dir_stat.stat.exists == false
+
+- name: git fetch and pull {{ projectUrl }}
+  command: "{{ cmd }}"
+  args:
+    chdir: "{{ projectDir }}"
+  with_items:
+    - git fetch
+    - git push
+  loop_control:
+    loop_var: cmd
+  when: project_dir_stat.stat.exists == true

@@ -1,0 +1,29 @@
+---
+- name: Install JDK 8
+  become: true
+  apt:
+    name: openjdk-8-jdk
+
+- name: Add Bazel distribution URI as a package source
+  become: true
+  apt_repository:
+    repo: deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8
+    state: present
+
+- name: copy bazel-release.pub.gpg to remote
+  copy:
+    src: files/bazel-release.pub.gpg
+    dest: /tmp/bazel-release.pub.gpg
+
+- name: Add Bazel distribution apt key
+  become: true
+  apt_key:
+    file: /tmp/bazel-release.pub.gpg
+    state: present
+
+#
+#- name: install bazel
+#  become: true
+#  apt:
+#    name: bazel
+#    allow_unauthenticated: true

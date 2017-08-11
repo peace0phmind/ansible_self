@@ -4,6 +4,7 @@
   apt_repository:
     repo: 'ppa:graphics-drivers/ppa'
 
+
 # check and install nvidia driver from ppa
 - name: Verify You Have a CUDA-Capable GPU
   shell: lspci | grep -i nvidia
@@ -14,6 +15,7 @@
     name: nvidia-375
   become: true
   when: nvidia_card_check.rc == 0
+
 
 # check nouveau drivers and Disabling it
 - name: check Nouveau drivers are loaded
@@ -34,6 +36,7 @@
   command: update-initramfs -u
   when: nouveau_check.rc == 0
 
+
 # check runlevel and set to multi-user.target
 - name: get default runlevel
   become: true
@@ -47,6 +50,7 @@
 
 - include: reboot.yml
   when: runlevel.stdout != 'multi-user.target'
+
 
 # check and install nvidia cuda toolkit and patch
 - stat: path=/usr/local/cuda/version.txt
@@ -71,6 +75,7 @@
   when: ( cuda_toolkit_version | skipped != true) and
         ( cuda_toolkit_version.stdout.find('CUDA Patch Version 8.0.61.2') == -1 )
 
+
 # config path environment
 - name: add cuda bin to path
   lineinfile:
@@ -94,3 +99,10 @@
     owner: root
     group: root
 #    mode: 0644
+
+
+# install NVIDIA CUDA Profile Tools Interface
+- name: install NVIDIA CUDA Profile Tools Interface
+  become: true
+  apt:
+    name: libcupti-dev

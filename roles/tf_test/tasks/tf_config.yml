@@ -1,6 +1,5 @@
 ---
 # mount /dev/sdb1 to /opt
-
 - name: set opt directory owner and group to mind
   become: true
   file:
@@ -9,7 +8,6 @@
     owner: root
     group: root
     mode: 0755
-    #recurse: yes
 
 - name: Mount sdb1 to /opt
   become: true
@@ -38,3 +36,12 @@
   become: true
   service: name=nfs-kernel-server state=restarted
   when: exports_file_change|failed
+
+# set [ip   tf] to /etc/hosts
+- name: add ip to /etc/hosts
+  become: true
+  lineinfile:
+    state: present
+    dest: /etc/hosts
+    regexp: '{{ ansible_default_ipv4.address }}   tf'
+    line: '{{ ansible_default_ipv4.address }}   tf'

@@ -1,0 +1,35 @@
+---
+# install jdk 8 for bazel
+- name: Install JDK 8
+  become: true
+  apt:
+    name: openjdk-8-jdk
+
+# check and install bazel using binary installer
+- name: need install unzip for binary installer
+  become: true
+  apt:
+    name: unzip
+
+- name: test bazel installed
+  shell: which bazel
+  register: bazel_stat
+  ignore_errors: true
+
+- name: install bazel using binary installer
+  become: true
+  script: large_files/bazel-0.5.3-without-jdk-installer-linux-x86_64.sh
+  when: bazel_stat.rc == 1
+
+# wheel, which enables you to manage Python compressed packages in the wheel (.whl) format.
+- name: get tensorflow env stat
+  stat:
+    path: /home/mind/anaconda3/envs/tensorflow
+  register: tensorflow_env_stat
+
+- name: install tensorflow virtual environment
+  shell: /home/mind/anaconda3/bin/conda create -n tensorflow
+  when: tensorflow_env_stat.stat.exists == false
+
+- name: install wheel use conda
+  shell: /home/mind/anaconda3/envs/tensorflow/bin/conda install -y wheel

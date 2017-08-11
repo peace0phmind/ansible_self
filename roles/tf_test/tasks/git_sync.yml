@@ -1,0 +1,101 @@
+---
+- name: clone projects to git user
+  become: true
+  become_user: git
+  include: git_sync_clone.yml projectUrl={{ item }}
+  with_items:
+    - git://github.com/tensorflow/tensorflow.git
+    - git://github.com/tensorflow/models.git
+    - git://github.com/facebook/react.git
+    - git://github.com/facebook/react-native.git
+    - git://github.com/facebook/nuclide.git
+    - git://github.com/facebook/osquery.git
+    - git://github.com/aksonov/react-native-router-flux.git
+    - git://github.com/binggg/mrn.git
+    - git://github.com/RaiMan/SikuliX2.git
+    - git://github.com/dzaiats/appium-sikuli-driver.git
+    - git://github.com/akka/akka.git
+    - git://github.com/spring-projects/spring-boot.git
+    - git://github.com/spring-projects/spring-framework.git
+    - git://github.com/sbt/sbt.git
+    - git://github.com/sbt/sbt-native-packager.git
+    - git://github.com/playframework/playframework.git
+    - git://github.com/playframework/play-slick.git
+    - git://github.com/opencv/opencv.git
+    - git://git.blender.org/blender.git
+    - git://github.com/apache/maven.git
+    - git://github.com/apache/spark.git
+    - git://github.com/apache/cloudstack.git
+    - git://github.com/apache/sqoop.git
+    - git://github.com/antirez/redis.git
+    - git://github.com/jenkinsci/jenkins.git
+    - git://github.com/jenkinsci/maven-plugin.git
+    - git://github.com/taobaofed/react-web.git
+    - git://github.com/naver/pinpoint.git
+    - git://github.com/reactjs/react-router-tutorial.git
+    - git://github.com/saltstack/salt.git
+    - git://github.com/atom/atom.git
+    - git://github.com/adobe/brackets.git
+    - git://github.com/ros/ros.git
+    - git://github.com/dianping/cat.git
+    - git://github.com/wizecore/vijava-ant.git
+    - git://github.com/getredash/redash.git
+    - git://github.com/bazelbuild/bazel.git
+    - git://github.com/bazelbuild/intellij.git
+    # Pro Git Book Content
+    - git://github.com/progit/progit.git
+    - git://github.com/eclipse/orion.client.git
+    - git://github.com/eclipse/orion.server.git
+    - git://github.com/mybatis/generator.git
+    - git://github.com/qos-ch/logback.git
+    - git://github.com/moby/moby.git
+    - git://github.com/docker/go-redis-server.git
+    - git://github.com/apprenticeharper/DeDRM_tools.git
+    - git://github.com/tantaman/Strut.git
+    - git://github.com/mindmup/legacy-mindmup.git
+    - git://github.com/mindmup/mapjs.git
+    - git://github.com/FortAwesome/Font-Awesome.git
+    - git://github.com/LightTable/LightTable.git
+    - git://github.com/twbs/bootstrap.git
+    - git://github.com/nakupanda/bootstrap3-dialog.git
+    - git://github.com/c9/core.git
+    - git://github.com/elastic/kibana.git
+    - git://github.com/elastic/elasticsearch.git
+    - git://github.com/ionic-team/ionic.git
+    - git://github.com/ionic-team/ionic-weather.git
+    - git://github.com/sirnewton01/godev.git
+    - git://github.com/sirnewton01/gdblib.git
+    - git://github.com/sirnewton01/godbg.git
+    - git://github.com/alibaba/dubbo.git
+    - git://github.com/gitbucket/gitbucket.git
+    - git://github.com/tomcat-slf4j-logback/tomcat-slf4j-logback.git
+    - git://github.com/typesafehub/config.git
+    - git://github.com/shadowsocks/shadowsocks.git
+    - git://github.com/shadowsocks/shadowsocks-go.git
+    - git://github.com/pac4j/play-pac4j.git
+    - git://github.com/almoehi/reactive-docker.git
+    - git://github.com/angular/angular.git
+    - git://github.com/angular/angular.js.git
+    - git://github.com/angular-ui/ui-grid.git
+    - git://github.com/HubSpot/messenger.git
+    - git://github.com/cloudflare/backgrid.git
+    - git://github.com/openzipkin/brave.git
+    - git://github.com/theironcook/Backbone.ModelBinder.git
+    - git://github.com/etsy/statsd.git
+    - git://github.com/ejwa/gitinspector.git
+    - git://github.com/isaacs/node-glob.git
+    - git://github.com/gin-gonic/gin.git
+    - git://github.com/Kapeli/javadocset.git
+    - git://libvirt.org/libvirt-java.git
+    - git://github.com/davezuko/react-redux-starter-kit.git
+    - git://github.com/Anonyfox/node-webkit-hipster-seed.git
+    - git://github.com/imsardine/sikuli-monkey.git
+    - git://github.com/reactjs/react-tutorial.git
+
+- name: sync projects to github
+  become: true
+  become_user: git
+  include: git_sync_block.yml projectUrl={{ item }}
+  with_items:
+    - git@github.com:peace0phmind/ansible_self.git
+    - git@github.com:peace0phmind/machine-learning-for-software-engineers.git

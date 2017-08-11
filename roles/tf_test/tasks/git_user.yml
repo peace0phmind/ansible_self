@@ -37,20 +37,3 @@
   shell: ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ""
   args:
     creates: ~/.ssh/id_rsa
-
-
-- name: clone projects to git user
-    block:
-      - debug:
-          msg: "{{ item }}"
-    with_items:
-      - https://github.com/tensorflow/tensorflow.git
-
-- name: clone projects to git user
-  become: true
-  become_user: git
-  include: git_clone.yml projectUrl={{ item }}
-  with_items:
-    - git@github.com:peace0phmind/ansible_self.git
-    - git@github.com:tensorflow/tensorflow.git
-    - git@github.com:tensorflow/models.git
