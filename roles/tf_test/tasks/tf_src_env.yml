@@ -18,7 +18,7 @@
 
 - name: install bazel using binary installer
   become: true
-  script: large_files/bazel-0.5.3-without-jdk-installer-linux-x86_64.sh
+  script: large_files/bazel-0.5.2-without-jdk-installer-linux-x86_64.sh
   when: bazel_stat.rc == 1
 
 # wheel, which enables you to manage Python compressed packages in the wheel (.whl) format.
@@ -33,3 +33,21 @@
 
 - name: install wheel use conda
   shell: /home/mind/anaconda3/envs/tensorflow/bin/conda install -y wheel
+
+- name: install python3-dev
+  become: true
+  apt:
+    name: python3-dev
+
+
+# copy export proxy script to $HOME/bin
+- name: copy tf zsh-theme
+  copy:
+    src: files/export_proxy.sh
+    dest: ~/bin
+    mode: 0700
+
+- lineinfile:
+    path: ~/.zshrc
+    regexp: 'export PATH=\$PATH:{{ ansible_user_dir }}/bin'
+    line: 'export PATH=$PATH:{{ ansible_user_dir }}/bin'
