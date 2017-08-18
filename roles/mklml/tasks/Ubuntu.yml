@@ -8,3 +8,10 @@
     - large_files/mklml_lnx_2018.0.20170720.tgz
   loop_control:
     loop_var: tar_file
+
+- name: add mklml lib path to LD_LIBRARY_PATH
+  lineinfile:
+    state: present
+    dest: ~/.zshrc
+    regexp: 'export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\$HOME/tensorflow/tensorflow/third_party/mkl'
+    line: 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/tensorflow/tensorflow/third_party/mkl'
