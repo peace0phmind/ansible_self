@@ -1,5 +1,5 @@
 ---
 #- include: tf_config.yml
 #- include: git_user.yml
-#- include: git_sync.yml
-- include: tf_src_env.yml
+- include: git_sync.yml
+#- include: tf_src_env.yml

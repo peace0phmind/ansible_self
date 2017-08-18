@@ -4,6 +4,10 @@
   become_user: git
   include: git_sync_clone.yml projectUrl={{ item }}
   with_items:
+    - git://github.com/spring-guides/tut-spring-boot-oauth2.git
+    - git://github.com/ipython/ipykernel.git
+    - git://github.com/takluyver/bash_kernel.git
+    - git://github.com/cben/ansible_jupyter_kernel.git
     - git://github.com/tensorflow/tensorflow.git
     - git://github.com/tensorflow/models.git
     - git://github.com/facebook/react.git

@@ -12,3 +12,19 @@
     dest: ~/.zshrc
     regexp: '^export PATH={{ ansible_env.HOME }}/anaconda3/bin:\$PATH'
     line: 'export PATH={{ ansible_env.HOME }}/anaconda3/bin:$PATH'
+
+# add douban pip source
+- name: Ensure "fav=lemonade is in section "[drinks]" in specified file
+  ini_file:
+    path: ~/.pip/pip.conf
+    section: global
+    option: index-url
+    value: https://pypi.douban.com/simple
+    backup: yes
+
+- ini_file:
+    path: ~/.pip/pip.conf
+    section: global
+    option: trusted-host
+    value: pypi.douban.com
+    backup: yes

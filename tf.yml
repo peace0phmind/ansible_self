@@ -5,8 +5,9 @@
 #    - upgrade
 #    - monitors
 #    - zsh
-    - nvidia
+#    - nvidia
 #    - anaconda
 #    - tools
+    - mklml
 #    - tf_test
 
